@@ -15,4 +15,15 @@ Kernel.puts("What type of opperation would you like to perform on these two numb
 operator = Kernel.gets().chomp()
 
 if operator == '1'
-	
+	results = number1.to_i() + number2.to_i()
+elsif operator == '2'
+	results = number1.to_i() - number2.to_i()
+elsif operator == '3'
+	results = number1.to_i() * number2.to_i()
+elsif operator == '4'
+	results = number1.to_f / number2.to_f()
+else
+	puts "Please enter a valid number choice for the opperation"
+end
+
+puts "The answer is: #{results}"
