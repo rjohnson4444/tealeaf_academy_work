@@ -3,6 +3,9 @@ require 'pry'
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
 COMPUTER_MARKER = 'O'
+WINNING_LINE = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # Rows
+               [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # Coulmns
+               [[1, 5, 9], [3, 5, 7]]              # Diagonals
 
 def prompt(message)
   puts "=> #{message}"
@@ -23,7 +26,7 @@ def display_board(brd)
   puts "     |     |"
   puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
   puts "     |     |"
-  puts ""	
+  puts ""
 end
 
 def initalize_board
@@ -39,7 +42,7 @@ end
 def player_places_piece!(brd)
   square = ''
   loop do
-    prompt "Please pick a square #{empty_squares(brd).join(", ")}"
+    prompt "Please pick a square #{joinor(empty_squares(brd), ', ')}"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
     prompt "Sorry, that is not a valid choice."
@@ -61,22 +64,19 @@ def someone_won?(brd)
 end
 
 def detect_winner(brd)
-  winning_line = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # Rows
-                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # Coulmns
-                 [[1, 5, 9], [3, 5, 7]]              # Diagonals
-
-  winning_line.each do |line|
-    if brd[line[0]] == PLAYER_MARKER &&
-       brd[line[1]] == PLAYER_MARKER &&
-       brd[line[2]] == PLAYER_MARKER
-       return 'Player'
-     elsif brd[line[0]] == COMPUTER_MARKER &&
-       brd[line[1]] == COMPUTER_MARKER &&
-       brd[line[2]] == COMPUTER_MARKER
-       return 'Computer'
-     end
+  WINNING_LINE.each do |line|
+    if brd.values_at(*line).count(PLAYER_MARKER) == 3 # Using the splat opperator (*)
+      return 'Player'
+    elsif brd.values_at(line[0], line[1], line[2]).count(COMPUTER_MARKER) == 3 # Not using the splat opperator
+      return 'Computer'
+    end
   end
   nil
+end
+
+def joinor(arr, delimiter, word='or')
+  arr[-1] = "#{word} #{arr.last}" if arr.size > 1
+  arr.join(delimiter)
 end
 
 loop do # Main Loop
